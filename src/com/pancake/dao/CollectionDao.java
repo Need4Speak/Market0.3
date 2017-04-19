@@ -3,10 +3,11 @@ package com.pancake.dao;
 import java.util.List;
 import com.pancake.entity.OrderTable;
 
-public interface OrderTableDao {
+public interface CollectionDao {
 	public void save(OrderTable transientInstance);
 	public void delete(OrderTable persistentInstance);
 	public OrderTable findById(java.lang.Integer id);
+	public OrderTable findByGoodIdAndBuyeId(java.lang.Integer goodId, java.lang.Integer buyerId);
 	public List findByExample(OrderTable instance);
 	public List findByProperty(String propertyName, Object value);
 	public List findByGood(Object good);

@@ -44,7 +44,7 @@ public class LogController {
 			request.getSession().setAttribute("userName", userName);
 			// request.getRequestDispatcher("/index.jsp").forward(request,
 			// response);
-			return "loginSuccess";
+			return "redirect:/showGoodsController";
 		} else {
 			return "loginFail";
 		}
@@ -67,6 +67,6 @@ public class LogController {
 			session.invalidate();
 		}
 
-		return "logoutSuccess";
+		return "redirect:/showGoodsController";
 	}
 }

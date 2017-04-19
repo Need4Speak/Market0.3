@@ -102,6 +102,7 @@
          </div>
       </form:form>
       </div>
+      <%@ include file="bar/foot_bar.jsp"%>
       <script src="https://code.jquery.com/jquery.js"></script>
       <script src="js/bootstrap.min.js"></script>
    </body>

@@ -49,18 +49,9 @@
   </head>
   
   <body>
-    <div  class="divcssTop">二手交易网站</div>
-    
-    <div  class="divcssMiddle">
-        <table width="250px" height="40px" border="1" cellspacing="0" cellpadding="0">
-        	<tr>
-			    <td ><a href="showGoodsController">全部商品</a></td>
-			    <td><%@ include file="userLoginBar.jsp"%></td>
-		  	</tr>
-        </table>
-    </div>
     <div>
     <ul id="nav"> 
+    <li><a href="showGoodsController">全部</a></li> 
 	<li><a href="showGoodsController?classification_id=2">电子产品</a></li> 
 	<li><a href="showGoodsController?classification_id=3">服装</a></li> 
 	<li><a href="showGoodsController?classification_id=4">化妆品</a></li> 

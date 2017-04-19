@@ -18,6 +18,7 @@ import com.pancake.entity.GoodForm;
 import com.pancake.entity.OrderTable;
 import com.pancake.entity.Page;
 import com.pancake.entity.User;
+import com.pancake.service.CollectionService;
 import com.pancake.service.impl.PageServiceImpl;
 import com.pancake.service.impl.ShowGoodServiceImpl;
 import com.pancake.service.impl.UserServiceImpl;
@@ -32,6 +33,8 @@ public class ShowGoodsController {
 	private PageServiceImpl psi;
 	@Autowired
 	private UserServiceImpl usi;
+	@Autowired
+	private CollectionService cs;
 
 	@RequestMapping(value = "/showGoodsController")
 	public ModelAndView inputProduct(HttpServletRequest request,
@@ -63,10 +66,16 @@ public class ShowGoodsController {
 
 		int goodId = Integer.parseInt(request.getParameter("goodId"));
 		GoodForm goodForm = sgsi.showGoodInfo(goodId);
+		OrderTable collection =null;
+		if(request.getSession().getAttribute("userName") != null) {
+			int buyerId = usi.getByName((String) request.getSession().getAttribute("userName")).getUserId();
+			collection = cs.getOrderByGoodAndBuyer(goodId, usi.getById(buyerId));
+		}
 		
 		if (null != goodForm) {
 			mav = new ModelAndView("good_info");
 			mav.addObject("goodForm", goodForm);
+			mav.addObject("collection", collection);
 			String userPhoto = usi.getByName(goodForm.getUserName()).getUserPhoto();
 			mav.addObject("userPhoto", userPhoto);
 		}

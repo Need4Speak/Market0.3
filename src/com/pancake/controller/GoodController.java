@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.pancake.entity.Good;
 import com.pancake.entity.GoodWithImage;
@@ -45,28 +46,41 @@ public class GoodController {
 	private ClassificationService classificationService;
 
 	private static final Log logger = LogFactory.getLog(GoodController.class);
-
-	@RequestMapping(value = "/good_input")
-	public String inputGood(Model model) {
-		model.addAttribute("good", new Good());
-		return "good_add_form";
+	
+//	@RequestMapping(value = "/good_input")
+	@RequestMapping(value = "/goodInputController")
+	public String goodInput(Model model, HttpSession session) {
+		logger.info("goodInputController called");
+		String userName = ((String) session.getAttribute("userName"));
+		if (null != userName) {
+			model.addAttribute("good", new Good());
+			return "good_add_form";
+		}
+		else {
+			return "redirect:/loginBarController";
+		}
+		
 	}
 
-	@RequestMapping(value = "/good_edit/{id}")
+//	@RequestMapping(value = "/good_edit/{id}")
+	@RequestMapping(value = "/goodEditController/{id}")
 	public String editGood(Model model, @PathVariable int id) {
+		logger.info("goodEditController called");
 		Good good = goodService.get(id);
 		model.addAttribute("good", good);
-		return "GoodEditForm";
+		return "good_edit_form";
 	}
 
-	@RequestMapping(value = "/good_delete/{id}")
+//	@RequestMapping(value = "/good_delete/{id}")
+	@RequestMapping(value = "/goodDeleteController/{id}")
 	public String deleteGood(Model model, @PathVariable int id) {
+		logger.info("goodDeleteController called");
 		Good good = goodService.get(id);
 		// 0: can't buy. Don't delete the good info.
 		good.setStatus(0);
 		goodService.update(good);
 		model.addAttribute("good", good);
-		return "redirect:/good_list";
+		return "redirect:/goodListController";
 	}
 
 	@RequestMapping(value = "/good_save")
@@ -89,7 +103,7 @@ public class GoodController {
 		Good goodInDB = new Good(good.getClassification(), good.getUser(), good.getName(), good.getPrice(), picString,
 				good.getFreight(), good.getDescription(), good.getStatus(), addTime, delTime, good.getOrderTables());
 		goodService.save(goodInDB);
-		return "redirect:/good_list";
+		return "redirect:/goodListController";
 	}
 
 	public List<String> storeImage(GoodWithImage good, HttpSession session, HttpServletRequest servletRequest) {
@@ -129,15 +143,23 @@ public class GoodController {
 		good.setAddTime(goodService.get(good.getGoodId()).getAddTime());
 		good.setDelTime(goodService.get(good.getGoodId()).getDelTime());
 		goodService.update(good);
-		return "redirect:/good_list";
+		return "redirect:/goodListController";
 	}
 
-	@RequestMapping(value = "/good_list")
+//	@RequestMapping(value = "/good_list")
+	@RequestMapping(value = "/goodListController")
 	public String listGoods(Model model, HttpSession session) {
-		logger.info("good_list");
-		List<Good> goods = goodService
-				.getAllGoodsByUser(userService.getByName((String) session.getAttribute("userName")));
-		model.addAttribute("goods", goods);
-		return "GoodList";
+		String userName = ((String) session.getAttribute("userName"));
+		if (null != userName) {
+			logger.info("goodListController");
+			List<Good> goods = goodService
+					.getAllGoodsByUser(userService.getByName((String) session.getAttribute("userName")));
+			model.addAttribute("goods", goods);
+			return "good_list";
+		}
+		else {
+			return "redirect:/loginBarController";
+		}
+		
 	}
 }

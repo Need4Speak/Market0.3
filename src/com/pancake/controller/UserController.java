@@ -32,10 +32,17 @@ public class UserController {
 
 	@RequestMapping(value = "/userInfoController")
 	public ModelAndView userInfo(Model model, HttpSession session) {
+		logger.info("userInfoController called");
 		String userName = (String) session.getAttribute("userName");
-		User aUser = userService.getByName(userName);
-		ModelAndView mav = new ModelAndView("userInfo");
-		mav.addObject("user", aUser);
+		ModelAndView mav = null;
+		if (null != userName) {
+			User aUser = userService.getByName(userName);
+			mav = new ModelAndView("userInfo");
+			mav.addObject("user", aUser);
+		}
+		else {
+			mav = new ModelAndView("redirect:/loginBarController");
+		}
 		return mav;
 	}
 

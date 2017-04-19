@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.pancake.dao.impl.ClassificationDaoImpl;
 import com.pancake.dao.impl.GoodDaoImpl;
-import com.pancake.dao.impl.OrderTableDaoImpl;
+import com.pancake.dao.impl.CollectionDaoImpl;
 import com.pancake.entity.Classification;
 import com.pancake.entity.Good;
 import com.pancake.entity.OrderTable;
@@ -25,7 +25,7 @@ import com.pancake.entity.Page;
 import com.pancake.service.PageService;
 @Service
 public class PageServiceImpl implements PageService {
-	private OrderTableDaoImpl otdi = new OrderTableDaoImpl();
+	private CollectionDaoImpl otdi = new CollectionDaoImpl();
 	private GoodDaoImpl gdi = new GoodDaoImpl();
 	private ClassificationDaoImpl cdi = new ClassificationDaoImpl();
 

@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.pancake.entity.GoodForm;
 import com.pancake.entity.OrderTable;
+import com.pancake.service.CollectionService;
 import com.pancake.service.ShowGoodService;
 import com.pancake.service.ShowOrderService;
 import com.pancake.service.UserService;
@@ -30,25 +31,29 @@ import com.pancake.service.impl.ShowOrderServiceImpl;
 import com.pancake.util.SplitStrIntoList;
 
 @Controller
-public class OrderController {
+public class CollectionController {
 	private static final Log logger = LogFactory.getLog(ShowGoodsController.class);
 	@Autowired
 	private ShowGoodService sgsi;
 	@Autowired
-	private UserService userService;
-	@Autowired
 	private ShowOrderService soService;
-
-	@RequestMapping(value = "/tryPlaceOrderController")
-	public ModelAndView tryPlaceOrder(HttpServletRequest request, HttpServletResponse response) {
-		logger.info("placeOrderController called");
-		ModelAndView mav = new ModelAndView("try_place_order");
+	@Autowired
+	private CollectionService cs;
+	
+	@RequestMapping(value = "/collectController")
+	public String collect(HttpServletRequest request, HttpServletResponse response) {
+		logger.info("collectController called");
 
 		int goodId = Integer.parseInt(request.getParameter("goodId"));
-		GoodForm goodForm = sgsi.showGoodInfo(goodId);
-
-		mav.addObject("goodForm", goodForm);
-		return mav;
+		String buyerName = (String) request.getSession().getAttribute("userName");
+		
+		try {
+			cs.createCollection(buyerName, goodId);
+			logger.info("Create collection successfully.");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "redirect:/goodInfoController?goodId=" + goodId;
 	}
 
 	@RequestMapping(value = "/placeOrderController")
@@ -70,26 +75,35 @@ public class OrderController {
 		mav.addObject("orderForm", orderForm);
 		return mav;
 	}
+	
+//	@RequestMapping(value = "/orderListController")
+	@RequestMapping(value = "/collectionListController")
+	public ModelAndView collectionList(HttpSession session, HttpServletRequest request) {
+		logger.info("collectionListController called");
+		String userName = ((String) session.getAttribute("userName"));
+		ModelAndView mav = null;
+		if (null != userName) {
 
-	@RequestMapping(value = "/orderListController")
-	public ModelAndView orderList(HttpSession session, HttpServletRequest request) {
-		logger.info("orderListController called");
-		ModelAndView mav = new ModelAndView("orderList");
+			mav = new ModelAndView("collection_list");
 
-		int orderStatus = Integer.parseInt(request.getParameter("orderStatus"));
-		String userName = ((String) session.getAttribute("userName")).trim();
-		List<OrderTable> orderList = soService.getOrderByBuyerName(userName);
-		OrderTable order = null;
-		for (Iterator<OrderTable> iterator = orderList.iterator(); iterator.hasNext();) {
-			order = (OrderTable) iterator.next();
-			// 将某件商品的第一张图片存入 pictures 属性里，用于显示。
-			List<String> picList = SplitStrIntoList.run(order.getGood().getPictures());
-			order.getGood().setPictures(picList.get(0));
-			if (-1 != orderStatus && order.getStatus() != orderStatus) {
-				iterator.remove();
+			int collectionStatus = Integer.parseInt(request.getParameter("collectionStatus"));
+
+			List<OrderTable> collectionList = soService.getOrderByBuyerName(userName);
+			OrderTable collection = null;
+			for (Iterator<OrderTable> iterator = collectionList.iterator(); iterator.hasNext();) {
+				collection = (OrderTable) iterator.next();
+				// 将某件商品的第一张图片存入 pictures 属性里，用于显示。
+				List<String> picList = SplitStrIntoList.run(collection.getGood().getPictures());
+				collection.getGood().setPictures(picList.get(0));
+				if (-1 != collectionStatus && collection.getStatus() != collectionStatus) {
+					iterator.remove();
+				}
 			}
+			mav.addObject("collectionList", collectionList);
 		}
-		mav.addObject("orderList", orderList);
+		else {
+			mav = new ModelAndView("redirect:/loginBarController");
+		}
 		return mav;
 	}
 
@@ -115,16 +129,17 @@ public class OrderController {
 		return mav;
 	}
 
-	@RequestMapping(value = "/orderCancelController/{orderId}")
-	public String orderCancel(Model model, @PathVariable int orderId) {
-		logger.info("orderCancelController called");
-		OrderTable order = soService.getOrderById(orderId);
-		// Set the status of order to 0, 0 means cancel.
-		order.setStatus(0);
+//	@RequestMapping(value = "/orderCancelController/{orderId}")
+	@RequestMapping(value = "/collectionCancelController/{orderId}")
+	public String collectionCancel(Model model, @PathVariable int orderId) {
+		logger.info("collectionCancelController called");
+		OrderTable collection = soService.getOrderById(orderId);
+		// Set the status of collection to 0, 0 means cancel.
+		collection.setStatus(0);
 		Timestamp cancelTime = new Timestamp(System.currentTimeMillis());
-		order.setCancelTime(cancelTime);
-		soService.update(order);
-		return "redirect:/orderListController?orderStatus=1";
+		collection.setCancelTime(cancelTime);
+		soService.update(collection);
+		return "redirect:/collectionListController?collectionStatus=1";
 
 	}
 

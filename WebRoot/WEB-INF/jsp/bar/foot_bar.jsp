@@ -21,27 +21,27 @@ a {
             <tr>
                 <td style="width:20%;">
                     <div>
-                        <a href="">首页</a>
+                        <a href="showGoodsController">首页</a>
                     </div>
                 </td>
                 <td style="width:20%;">
                     <div>
-                        <a href="">买的</a>
+                        <a href="collectionListController?collectionStatus=1">收藏</a>
                     </div>
                 </td>
                 <td style="width: 20%;">
                     <div>
-                        <a href="">发布</a>
+                        <a href="goodInputController">发布</a>
                     </div>
                 </td>
                 <td style="width: 20%;">
                     <div>
-                        <a href="">卖的</a>
+                        <a href="goodListController">卖的</a>
                     </div>
                 </td>
                 <td style="width: 20%;">
                     <div>
-                        <a href="">我</a>
+                        <a href="userInfoController">我</a>
                     </div>
                 </td>
             </tr>

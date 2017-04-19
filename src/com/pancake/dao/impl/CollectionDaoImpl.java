@@ -10,7 +10,7 @@ import org.hibernate.criterion.Example;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.pancake.dao.OrderTableDao;
+import com.pancake.dao.CollectionDao;
 import com.pancake.entity.OrderTable;
 import com.pancake.util.HibernateSessionFactory;
 
@@ -25,7 +25,7 @@ import com.pancake.util.HibernateSessionFactory;
  * @see com.pancake.entity.OrderTable
  * @author MyEclipse Persistence Tools
  */
-public class OrderTableDaoImpl implements OrderTableDao {
+public class CollectionDaoImpl implements CollectionDao {
 	// private static final Logger log = LoggerFactory
 	// .getLogger(OrderTableDaoImpl.class);
 	// property constants
@@ -217,6 +217,12 @@ public class OrderTableDaoImpl implements OrderTableDao {
 //			log.error("merge failed", re);
 			throw re;
 		}
+	}
+
+	@Override
+	public OrderTable findByGoodIdAndBuyeId(Integer goodId, Integer buyerId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

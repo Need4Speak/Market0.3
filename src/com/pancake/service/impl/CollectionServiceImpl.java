@@ -12,28 +12,30 @@ import com.pancake.dao.impl.UserDaoImpl;
 import com.pancake.entity.Good;
 import com.pancake.entity.OrderTable;
 import com.pancake.entity.User;
-import com.pancake.service.ShowOrderService;
+import com.pancake.service.CollectionService;
 
 @Service
-public class ShowOrderServiceImpl implements ShowOrderService {
+public class CollectionServiceImpl implements CollectionService {
 
 	private CollectionDaoImpl otdi = new CollectionDaoImpl();
 	private GoodDaoImpl gdi = new GoodDaoImpl();
 	private UserDaoImpl udi = new UserDaoImpl();
-
+	
+	@Override
 	public OrderTable getOrderById(java.lang.Integer orderId) {
 		OrderTable order = otdi.findById(orderId);
 		return order;
 	}
-
-	public OrderTable createOrder(String buyerName, int goodId, String address, String description) {
+	
+	@Override
+	public OrderTable createCollection(String buyerName, int goodId) {
+		String address = "Use param address temporary.";
+		String description = "For collection use.";
 		Good aGood = gdi.findById(goodId);
 		User aBuyer = udi.findByUserName(buyerName);
 		User aSeller = aGood.getUser();
-		int buyerId = aBuyer.getUserId();
-		int sellerId = aGood.getUser().getUserId();
-		// Date creationTime = new Date();
-		// Date cancelTime = null;
+//		int buyerId = aBuyer.getUserId();
+//		int sellerId = aGood.getUser().getUserId();
 		Timestamp creationTime = new Timestamp(System.currentTimeMillis());
 		Timestamp cancelTime = null;
 		int status = 1; // 1 means waiting for purchase.
@@ -61,6 +63,20 @@ public class ShowOrderServiceImpl implements ShowOrderService {
 	public OrderTable update(OrderTable order) {
 		otdi.merge(order);
 		return order;
+	}
+
+	@Override
+	public OrderTable getOrderByGoodAndBuyer(Integer goodId, User buyer) {
+		OrderTable aCollection = null;
+		List<OrderTable> collections = otdi.findByBuyer(buyer);
+		for (OrderTable collection : collections) {
+			if(goodId == collection.getGood().getGoodId()) {
+				aCollection = collection;
+				break;
+			}
+		}
+		
+		return aCollection;
 	}
 
 }

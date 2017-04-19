@@ -46,31 +46,35 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
          .detail{
             font-size: 15px;
          }
+         hr{
+         height:1px;
+         border:none;
+         border-top:1px solid #555555;
+         }
       </style>
    </head>
    <body>
      <div class="container">
    <div class="row clearfix">
-      <div class="col-md-2 column">
+      <div class="col-md-12 column">
          <img class="head" src="images/${goodForm.userName}/head/${userPhoto}" alt="我是头像">
       </div>
-      <div class="col-md-2 column">
+      <div class="col-md-12 column">
          <p class="name">卖家：${goodForm.userName}</p>
       </div>
-      <div class="col-md-6 column">
+      <div class="col-md-12 column">
+         <p class="tel">手机：110</p>
       </div>
-      <div class="col-md-2 column">
-         <p class="price">价格：￥${goodForm.price}</p>
-      </div>
-      <div class="col-md-2 column">
-         <p class="price">运费：￥${goodForm.freight}</p>
-      </div>
+      <hr>
    </div>
     <div class="row clearfix">
       <div class="col-md-12 column">
          <p class="detail">商品名： ${goodForm.goodName}</p>
+         <p>价格：￥${goodForm.price}</p>
+         <hr>
          <p class="detail">详情：</p>
          <p class="detail">${goodForm.description}</p>
+         <hr>
       </div>
    </div>
    <div class="row clearfix">
@@ -84,13 +88,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<div class="col-md-12 column">
 			<c:choose>
 			    <c:when test="${userName != null}">
-			    	<form action="tryPlaceOrderController?goodId=${goodForm.goodId}" method="post">
-			    		<input type="submit" class="btn btn-default btn-block active btn-danger" value="购买">
-			    	</form>
+			    	<c:choose>
+			    		<c:when test="${collection.status == 0}">
+					    	<form action="collectController?goodId=${goodForm.goodId}" method="post">
+					    		<input type="submit" class="btn btn-default btn-block active btn-danger" value="收藏">
+					    	</form>
+				    	</c:when>
+				    	<c:otherwise>
+				    		<form action="collectionCancelController/${collection.orderId}" method="post">
+					    		<input type="submit" class="btn btn-default btn-block active btn-danger" value="取消收藏">
+					    	</form>
+				    	</c:otherwise>
+			    	</c:choose>
 			    </c:when>
 			    <c:otherwise>
 			    	<form action="loginBarController" method="post">
-				    	<input type="submit" class="btn btn-default btn-block active btn-danger" value="登录后购买">
+				    	<input type="submit" class="btn btn-default btn-block active btn-danger" value="登录后收藏">
 			    	</form>
     			</c:otherwise>
 			</c:choose>
@@ -98,5 +111,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         </div>
    </div>
 </div>
+<br><br><br><br><br><br><br><br>
+<%@ include file="bar/foot_bar.jsp"%>
    </body>
 </html>

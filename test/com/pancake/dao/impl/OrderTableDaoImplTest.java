@@ -14,7 +14,7 @@ import com.pancake.entity.User;
 public class OrderTableDaoImplTest {
 
 	private UserDaoImpl udi = new UserDaoImpl();
-	private OrderTableDaoImpl otdi = new OrderTableDaoImpl();
+	private CollectionDaoImpl otdi = new CollectionDaoImpl();
 	private GoodDaoImpl gdi = new GoodDaoImpl();
 	@Test
 	public void testFindByGood() {

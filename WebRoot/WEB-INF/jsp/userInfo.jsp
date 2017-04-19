@@ -9,7 +9,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <head>
     <base href="<%=basePath%>">
     
-    <title>My JSP 'userInfo.jsp' starting page</title>
+    <title>我的信息</title>
     
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
@@ -23,6 +23,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body>
+  	<a href="logoutController?userName=${userNameInSession}">注销</a>
   	<form action="userUpdateController" method="post" enctype="multipart/form-data">
   		<input type="hidden" name="userId" value="${user.userId}">
 	    用户名：<input type="text" name="userName" value="${user.userName}">  <br>
